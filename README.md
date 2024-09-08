@@ -21,7 +21,7 @@ Add the following to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-serenity-oauth = { git = "https://github.com/serenity-rs/oauth" }
+serenity-oauth = { git = "https://github.com/dbotsfun/oauth" }
 ```
 
 And then the following to your `main.rs` or `lib.rs`:

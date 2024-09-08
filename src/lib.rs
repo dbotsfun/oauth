@@ -25,12 +25,12 @@
 
 #[macro_use] extern crate serde_derive;
 
-extern crate hyper;
+extern crate reqwest;
 extern crate percent_encoding;
 extern crate serde;
 extern crate serde_json;
 extern crate serde_urlencoded;
-extern crate serenity_model;
+extern crate serenity;
 
 pub mod bridge;
 pub mod constants;
@@ -40,6 +40,6 @@ pub mod utils;
 mod error;
 mod scope;
 
-pub use bridge::hyper::DiscordOAuthHyperRequester;
+pub use bridge::reqwest::DiscordOAuthReqwestRequester;
 pub use error::{Error, Result};
 pub use scope::Scope;

@@ -3,9 +3,9 @@
 //! This includes functions for easily generating URLs to redirect users to for
 //! authorization.
 
-pub use serenity_model::Permissions;
+pub use serenity::model::Permissions;
 
-use constants::BASE_AUTHORIZE_URI;
+use crate::constants::BASE_AUTHORIZE_URI;
 use percent_encoding;
 use super::Scope;
 use std::fmt::Write;
@@ -102,7 +102,7 @@ pub fn authorization_code_grant_url(
     let mut base = String::from(BASE_AUTHORIZE_URI);
     let uri = percent_encoding::percent_encode(
         redirect_uri.as_bytes(),
-        percent_encoding::USERINFO_ENCODE_SET,
+        percent_encoding::NON_ALPHANUMERIC,
     );
 
     let _ = write!(

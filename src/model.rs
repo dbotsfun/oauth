@@ -1,7 +1,7 @@
 //! A collection of models that can be deserialized from response bodies and
 //! serialized into request bodies.
 
-use serenity_model::{PartialGuild, Webhook};
+use serenity::model::{guild::PartialGuild, webhook::Webhook};
 
 /// Structure of data used as the body of a request to exchange the [`code`] for
 /// an access token.
