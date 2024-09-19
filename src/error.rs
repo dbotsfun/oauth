@@ -2,11 +2,10 @@ use serde_json::Error as JsonError;
 use serde_urlencoded::ser::Error as UrlEncodeError;
 use std::error::Error as StdError;
 use std::fmt::{Display, Formatter, Result as FmtResult};
-use std::result::Result as StdResult;
 use reqwest::Error as ReqwestError;
 
 /// Result type used throughout the library's public result functions.
-pub type Result<T> = StdResult<T, Error>;
+pub type Result<T> = core::result::Result<T, Error>;
 
 /// Standard error enum used to wrap different potential error types.
 #[derive(Debug)]
