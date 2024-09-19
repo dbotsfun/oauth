@@ -5,9 +5,9 @@
 
 pub use serenity::model::Permissions;
 
+use super::Scope;
 use crate::constants::BASE_AUTHORIZE_URI;
 use percent_encoding;
-use super::Scope;
 use std::fmt::Write;
 
 /// Creates a URL for a simple bot authorization flow.
@@ -37,8 +37,7 @@ use std::fmt::Write;
 /// assert_eq!(url, expected);
 /// # }
 /// ```
-pub fn bot_authorization_url(client_id: u64, permissions: Permissions)
-    -> String {
+pub fn bot_authorization_url(client_id: u64, permissions: Permissions) -> String {
     format!(
         "{}?client_id={}&scope=bot&permissions={}",
         BASE_AUTHORIZE_URI,
@@ -108,8 +107,7 @@ pub fn authorization_code_grant_url(
     let _ = write!(
         base,
         "?response_type=code&client_id={}&redirect_uri={}&scope=",
-        client_id,
-        uri,
+        client_id, uri,
     );
 
     let scope_count = scopes.len();

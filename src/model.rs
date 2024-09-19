@@ -45,12 +45,12 @@ impl AccessTokenExchangeRequest {
     ///
     /// assert_eq!(request.grant_type, "authorization_code");
     /// ```
-    pub fn new<S, T, U>(
-        client_id: u64,
-        client_secret: S,
-        code: T,
-        redirect_uri: U,
-    ) -> Self where S: Into<String>, T: Into<String>, U: Into<String> {
+    pub fn new<S, T, U>(client_id: u64, client_secret: S, code: T, redirect_uri: U) -> Self
+    where
+        S: Into<String>,
+        T: Into<String>,
+        U: Into<String>,
+    {
         Self {
             client_secret: client_secret.into(),
             code: code.into(),
@@ -156,12 +156,12 @@ impl RefreshTokenRequest {
     ///
     /// assert_eq!(request.grant_type, "refresh_token");
     /// ```
-    pub fn new<S, T, U>(
-        client_id: u64,
-        client_secret: S,
-        redirect_uri: T,
-        refresh_token: U,
-    ) -> Self where S: Into<String>, T: Into<String>, U: Into<String> {
+    pub fn new<S, T, U>(client_id: u64, client_secret: S, redirect_uri: T, refresh_token: U) -> Self
+    where
+        S: Into<String>,
+        T: Into<String>,
+        U: Into<String>,
+    {
         Self {
             client_secret: client_secret.into(),
             grant_type: "refresh_token".to_owned(),
@@ -193,4 +193,12 @@ pub struct WebhookTokenResponse {
     pub token_type: String,
     /// Information about the webhook created.
     pub webhook: Webhook,
+}
+
+#[derive(Clone, Debug, Deserialize)]
+pub struct AuthDiscordUser {
+    pub id: String,
+    pub username: String,
+    pub avatar: Option<String>,
+    pub public_flags: Option<u64>,
 }

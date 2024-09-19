@@ -7,3 +7,5 @@ pub const BASE_REVOKE_URI: &str = "https://discordapp.com/api/oauth2/revoke";
 /// The token URI, used for exchanging a refresh token for a fresh access token
 /// and new refresh token.
 pub const BASE_TOKEN_URI: &str = "https://discordapp.com/api/oauth2/token";
+/// The base URI for the current user.
+pub const BASE_ME_URI: &str = "https://discordapp.com/api/users/@me";

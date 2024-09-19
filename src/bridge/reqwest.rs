@@ -1,15 +1,12 @@
-
 //! Bridged support for the `reqwest` HTTP client.
 
-use reqwest::blocking::Client as ReqwestClient;
-use reqwest::header::CONTENT_TYPE;
-use crate::constants::BASE_TOKEN_URI;
+use crate::constants::{BASE_ME_URI, BASE_TOKEN_URI};
 use crate::model::{
-    AccessTokenExchangeRequest,
-    AccessTokenResponse,
-    RefreshTokenRequest,
+    AccessTokenExchangeRequest, AccessTokenResponse, AuthDiscordUser, RefreshTokenRequest,
 };
 use crate::Result;
+use reqwest::blocking::Client as ReqwestClient;
+use reqwest::header::CONTENT_TYPE;
 
 /// A trait used that implements methods for interacting with Discord's OAuth2
 /// API on Reqwest's client.
@@ -75,8 +72,7 @@ pub trait DiscordOAuthReqwestRequester {
     /// #     try_main().unwrap();
     /// # }
     /// ```
-    fn exchange_code(&self, request: &AccessTokenExchangeRequest)
-        -> Result<AccessTokenResponse>;
+    fn exchange_code(&self, request: &AccessTokenExchangeRequest) -> Result<AccessTokenResponse>;
 
     /// Exchanges a refresh token, returning a new refresh token and fresh
     /// access token.
@@ -114,30 +110,70 @@ pub trait DiscordOAuthReqwestRequester {
     /// #     try_main().unwrap();
     /// # }
     /// ```
-    fn exchange_refresh_token(&self, request: &RefreshTokenRequest)
-        -> Result<AccessTokenResponse>;
+    fn exchange_refresh_token(&self, request: &RefreshTokenRequest) -> Result<AccessTokenResponse>;
+
+    /// Fetches the user's information using the provided access token.
+    /// This is useful for verifying the user's identity.
+    /// This method does not return the user's information; it only ensures
+    /// that the user is valid.
+    ///
+    /// # Examples
+    /// Fetch a user's information:
+    ///
+    /// ```rust,no_run
+    /// extern crate reqwest;
+    /// extern crate serenity_oauth;
+    ///
+    /// # use std::error::Error;
+    /// #
+    /// # fn try_main() -> Result<(), Box<Error>> {
+    /// use reqwest::Client;
+    /// use serenity_oauth::DiscordOAuthReqwestRequester;
+    ///
+    /// let client = Client::new();
+    /// let user = client.fetch_user("user access token")?;
+    /// #     Ok(())
+    /// # }
+    /// #
+    /// # fn main() {
+    /// #     try_main().unwrap();
+    /// # }
+    /// ```
+    fn fetch_user(&self, token: &str) -> Result<AuthDiscordUser>;
 }
 
 impl DiscordOAuthReqwestRequester for ReqwestClient {
-    fn exchange_code(&self, request: &AccessTokenExchangeRequest)
-        -> Result<AccessTokenResponse> {
+    fn exchange_code(&self, request: &AccessTokenExchangeRequest) -> Result<AccessTokenResponse> {
         let body = serde_urlencoded::to_string(request)?;
 
-        let response = self.post(BASE_TOKEN_URI)
+        let response = self
+            .post(BASE_TOKEN_URI)
             .header(CONTENT_TYPE, "application/x-www-form-urlencoded")
             .query(&body)
-            .send()?.json::<AccessTokenResponse>()?;
+            .send()?
+            .json::<AccessTokenResponse>()?;
 
         Ok(response)
     }
 
-    fn exchange_refresh_token(&self, request: &RefreshTokenRequest)
-        -> Result<AccessTokenResponse> {
+    fn exchange_refresh_token(&self, request: &RefreshTokenRequest) -> Result<AccessTokenResponse> {
         let body = serde_urlencoded::to_string(request)?;
 
-        let response = self.post(BASE_TOKEN_URI)
+        let response = self
+            .post(BASE_TOKEN_URI)
             .query(&body)
-            .send()?.json::<AccessTokenResponse>()?;
+            .send()?
+            .json::<AccessTokenResponse>()?;
+
+        Ok(response)
+    }
+
+    fn fetch_user(&self, token: &str) -> Result<AuthDiscordUser> {
+        let response = self
+            .get(BASE_ME_URI)
+            .header("Authorization", format!("Bearer {}", token))
+            .send()?
+            .json::<AuthDiscordUser>()?;
 
         Ok(response)
     }

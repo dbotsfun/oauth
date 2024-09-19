@@ -23,10 +23,11 @@
 
 #![deny(missing_docs)]
 
-#[macro_use] extern crate serde_derive;
+#[macro_use]
+extern crate serde_derive;
 
-extern crate reqwest;
 extern crate percent_encoding;
+extern crate reqwest;
 extern crate serde;
 extern crate serde_json;
 extern crate serde_urlencoded;
