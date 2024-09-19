@@ -1,7 +1,7 @@
 
 //! Bridged support for the `reqwest` HTTP client.
 
-use reqwest::Client as ReqwestClient;
+use reqwest::blocking::Client as ReqwestClient;
 use reqwest::header::CONTENT_TYPE;
 use crate::constants::BASE_TOKEN_URI;
 use crate::model::{
@@ -76,7 +76,7 @@ pub trait DiscordOAuthReqwestRequester {
     /// # }
     /// ```
     fn exchange_code(&self, request: &AccessTokenExchangeRequest)
-        -> impl std::future::Future<Output = Result<AccessTokenResponse>> + Send;
+        -> Result<AccessTokenResponse>;
 
     /// Exchanges a refresh token, returning a new refresh token and fresh
     /// access token.
@@ -115,29 +115,29 @@ pub trait DiscordOAuthReqwestRequester {
     /// # }
     /// ```
     fn exchange_refresh_token(&self, request: &RefreshTokenRequest)
-        -> impl std::future::Future<Output = Result<AccessTokenResponse>> + Send;
+        -> Result<AccessTokenResponse>;
 }
 
 impl DiscordOAuthReqwestRequester for ReqwestClient {
-    async fn exchange_code(&self, request: &AccessTokenExchangeRequest)
+    fn exchange_code(&self, request: &AccessTokenExchangeRequest)
         -> Result<AccessTokenResponse> {
         let body = serde_urlencoded::to_string(request)?;
 
         let response = self.post(BASE_TOKEN_URI)
             .header(CONTENT_TYPE, "application/x-www-form-urlencoded")
             .query(&body)
-            .send().await?.json::<AccessTokenResponse>().await?;
+            .send()?.json::<AccessTokenResponse>()?;
 
         Ok(response)
     }
 
-    async fn exchange_refresh_token(&self, request: &RefreshTokenRequest)
+    fn exchange_refresh_token(&self, request: &RefreshTokenRequest)
         -> Result<AccessTokenResponse> {
         let body = serde_urlencoded::to_string(request)?;
 
         let response = self.post(BASE_TOKEN_URI)
             .query(&body)
-            .send().await?.json::<AccessTokenResponse>().await?;
+            .send()?.json::<AccessTokenResponse>()?;
 
         Ok(response)
     }
