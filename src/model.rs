@@ -195,10 +195,17 @@ pub struct WebhookTokenResponse {
     pub webhook: Webhook,
 }
 
+/// Information about a user that has authorized your application.
+///
+/// This is used when the [`Scope::Identify`] scope is requested.
 #[derive(Clone, Debug, Deserialize)]
 pub struct AuthDiscordUser {
+    /// The user's avatar hash.
     pub id: String,
+    /// The user's username.
     pub username: String,
+    /// The user's avatar hash.
     pub avatar: Option<String>,
+    /// The user's public flags.
     pub public_flags: Option<u64>,
 }

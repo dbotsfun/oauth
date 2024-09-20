@@ -38,16 +38,16 @@ impl From<UrlEncodeError> for Error {
 
 impl Display for Error {
     fn fmt(&self, f: &mut Formatter) -> FmtResult {
-        f.write_str(self.description())
+        f.write_str(self.to_string().as_str())
     }
 }
 
-impl StdError for Error {
-    fn description(&self) -> &str {
+impl Error {
+    fn to_string(&self) -> String {
         match *self {
-            Error::Reqwest(ref inner) => inner.description(),
-            Error::Json(ref inner) => inner.description(),
-            Error::UrlEncode(ref inner) => inner.description(),
+            Error::Reqwest(ref inner) => inner.to_string(),
+            Error::Json(ref inner) => inner.to_string(),
+            Error::UrlEncode(ref inner) => inner.to_string(),
         }
     }
 }
